@@ -44,7 +44,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Header */
   .header {
     background: linear-gradient(135deg, #1a1d27 0%, #12152a 100%);
     border-bottom: 1px solid var(--border);
@@ -62,7 +61,6 @@
     margin-bottom: 14px;
   }
 
-  /* Logo */
   .logo-wrap {
     display: flex;
     align-items: center;
@@ -129,7 +127,6 @@
     background: rgba(79,142,247,0.1);
   }
 
-  /* Budget Summary Card */
   .budget-card {
     margin: 14px 16px;
     background: linear-gradient(135deg, #1e2540 0%, #2a1f4a 100%);
@@ -186,7 +183,6 @@
   .stat-value.budget { color: var(--accent); }
   .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
 
-  /* Budget Input */
   .budget-input-row {
     display: flex;
     gap: 8px;
@@ -234,7 +230,6 @@
     cursor: pointer;
   }
 
-  /* Category Filter Tabs */
   .tabs-scroll {
     overflow-x: auto;
     padding: 0 16px 12px;
@@ -264,7 +259,6 @@
     box-shadow: 0 4px 12px rgba(79,142,247,0.3);
   }
 
-  /* Expense List */
   .section-header {
     display: flex;
     justify-content: space-between;
@@ -364,7 +358,6 @@
   }
   .delete-btn:active { background: rgba(239,68,68,0.3); transform: scale(0.9); }
 
-  /* FAB Add Button */
   .fab {
     position: fixed;
     bottom: 24px;
@@ -387,7 +380,6 @@
   }
   .fab:active { transform: translateX(-50%) scale(0.95); }
 
-  /* Modal */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.7);
@@ -469,18 +461,6 @@
   .cat-option .emoji { font-size: 20px; }
   .cat-option .name { font-size: 10px; color: var(--text2); margin-top: 3px; }
   .cat-option.selected .name { color: var(--accent); }
-  .cat-option .edit-cat-icon {
-    display: none;
-    position: absolute;
-    top: -6px; left: -6px;
-    width: 18px; height: 18px;
-    background: var(--accent);
-    border-radius: 50%;
-    font-size: 10px;
-    align-items: center; justify-content: center;
-    color: white;
-    cursor: pointer;
-  }
 
   .btn-primary {
     width: 100%;
@@ -512,7 +492,6 @@
   }
   .btn-secondary:active { transform: scale(0.97); }
 
-  /* Chart */
   .chart-section {
     margin: 14px 16px;
     background: var(--surface);
@@ -527,12 +506,10 @@
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
   .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
 
-  /* Empty state */
   .empty { text-align: center; padding: 40px 20px; color: var(--text2); }
   .empty .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
   .empty p { font-size: 14px; }
 
-  /* Toast */
   .toast {
     position: fixed;
     top: 20px;
@@ -553,7 +530,6 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error { background: var(--red); }
 
-  /* Action Buttons */
   .action-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -580,7 +556,6 @@
   .action-btn.info { border-color: rgba(79,142,247,0.3); color: var(--accent); }
   .action-btn.warning { border-color: rgba(234,179,8,0.3); color: var(--yellow); }
 
-  /* Autocomplete */
   .autocomplete-wrap { position: relative; }
 
   .autocomplete-list {
@@ -614,9 +589,6 @@
   .autocomplete-item:last-child { border-bottom: none; }
   .autocomplete-item:hover, .autocomplete-item.ac-selected { background: rgba(79,142,247,0.15); }
   .autocomplete-item .ac-icon { font-size: 12px; color: var(--text2); }
-
-  /* Settings Modal */
-  .settings-modal .modal { max-height: 85vh; }
 
   .cat-manage-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 
@@ -670,7 +642,6 @@
     transition: all 0.2s;
   }
 
-  /* Emoji Picker */
   .emoji-picker {
     background: var(--surface3);
     border: 1px solid var(--border);
@@ -696,7 +667,6 @@
   }
   .ep-emoji:hover { background: rgba(255,255,255,0.1); }
 
-  /* Install banner */
   .install-banner {
     margin: 0 16px 14px;
     background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,191,0.15));
@@ -726,7 +696,6 @@
     white-space: nowrap;
   }
 
-  /* Color picker options */
   .color-options {
     display: flex;
     flex-wrap: wrap;
@@ -744,7 +713,6 @@
   .color-opt:hover { transform: scale(1.2); }
   .color-opt.selected { border-color: white; transform: scale(1.15); }
 
-  /* Backup modal */
   .backup-section {
     background: var(--surface2);
     border-radius: 14px;
@@ -761,10 +729,8 @@
     gap: 6px;
   }
 
-  /* Divider */
   .divider { height: 1px; background: var(--border); margin: 12px 0; }
 
-  /* Drag handle for reorder */
   .drag-handle { color: var(--text2); font-size: 16px; cursor: grab; padding: 0 2px; }
 
   @media (max-width: 380px) {
@@ -773,7 +739,6 @@
     .fab { padding: 13px 22px; font-size: 14px; }
   }
 
-  /* Settings Dropdown Menu */
   .settings-menu {
     position: absolute;
     top: 48px;
@@ -805,7 +770,6 @@
   .settings-menu-item:active { background: var(--surface3); }
   .settings-menu-item .sm-icon { font-size: 18px; width: 24px; text-align: center; }
 
-  /* About Modal */
   .about-info-row {
     display: flex;
     align-items: center;
@@ -836,12 +800,10 @@
     cursor: pointer;
   }
 
-
   .modal::-webkit-scrollbar { width: 4px; }
   .modal::-webkit-scrollbar-track { background: transparent; }
   .modal::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
 
-  /* ── SYNC ── */
   .sync-status-card { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
   .sync-status-card.disconnected { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
   .sync-status-card.connected { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
@@ -865,10 +827,10 @@
   .toggle-track.off .toggle-knob { transform: translateX(-20px); }
 
 </style>
+<base target="_blank">
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
   <div class="header-top">
     <div class="logo-wrap">
@@ -889,7 +851,6 @@
     </div>
   </div>
 
-  <!-- Settings Dropdown -->
   <div class="settings-menu" id="settingsMenu">
     <div class="settings-menu-item" onclick="openSettings();closeSettingsMenu()">
       <span class="sm-icon">🗂️</span> إدارة الأصناف
@@ -902,7 +863,6 @@
     </div>
   </div>
 
-  <!-- Budget input -->
   <div class="budget-input-row">
     <div class="budget-input-wrapper">
       <label>الميزانية الشهرية</label>
@@ -915,7 +875,6 @@
   </div>
 </div>
 
-<!-- Install Banner -->
 <div class="install-banner hidden" id="installBanner">
   <div style="font-size:28px">📲</div>
   <div class="install-banner-text">
@@ -926,7 +885,6 @@
   <div onclick="document.getElementById('installBanner').classList.add('hidden')" style="cursor:pointer;color:var(--text2);font-size:18px;padding:4px">✕</div>
 </div>
 
-<!-- Budget Card -->
 <div class="budget-card">
   <div class="budget-label">الباقي من الميزانية</div>
   <div class="budget-amount remaining" id="remainingAmount">0 دج</div>
@@ -951,10 +909,8 @@
   </div>
 </div>
 
-<!-- Category Tabs -->
 <div class="tabs-scroll" id="catTabs"></div>
 
-<!-- Action Buttons -->
 <div class="action-row">
   <button class="action-btn danger" onclick="clearAll()">🗑️ مسح الكل</button>
   <button class="action-btn success" onclick="exportCSV()">📊 تصدير Excel</button>
@@ -962,14 +918,12 @@
   <button class="action-btn warning" onclick="restoreBackup()">📂 استرجاع</button>
 </div>
 
-<!-- Chart Section (hidden by default) -->
 <div class="chart-section" id="chartSection" style="display:none">
   <div class="chart-title">توزيع المصاريف</div>
   <canvas id="myChart" height="220"></canvas>
   <div class="legend" id="chartLegend"></div>
 </div>
 
-<!-- Expenses Section -->
 <div class="section-header">
   <div class="section-title">المصاريف</div>
   <div class="sort-btn" onclick="toggleSort()">ترتيب ⇅</div>
@@ -977,12 +931,10 @@
 
 <div class="expenses-list" id="expensesList"></div>
 
-<!-- FAB -->
 <button class="fab" onclick="openModal()">
   ＋ إضافة مصروف
 </button>
 
-<!-- ===== ADD EXPENSE MODAL ===== -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1022,7 +974,6 @@
   </div>
 </div>
 
-<!-- ===== SETTINGS MODAL (Category Manager) ===== -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1046,7 +997,6 @@
   </div>
 </div>
 
-<!-- ===== BACKUP MODAL ===== -->
 <div class="modal-overlay" id="backupModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1072,7 +1022,6 @@
   </div>
 </div>
 
-<!-- iOS Install Instructions Modal -->
 <div class="modal-overlay" id="iosModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1090,8 +1039,6 @@
   </div>
 </div>
 
-
-<!-- ===== SYNC MODAL ===== -->
 <div class="modal-overlay" id="syncModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1157,7 +1104,6 @@
   </div>
 </div>
 
-<!-- ===== ABOUT MODAL ===== -->
 <div class="modal-overlay" id="aboutModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1168,7 +1114,7 @@
         <canvas id="aboutIconCanvas" width="72" height="72"></canvas>
       </div>
       <div style="font-size:20px;font-weight:900;background:linear-gradient(135deg,#FFF0A0,#D4AF37,#8B6914);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">دفتر المصاريف</div>
-      <div style="font-size:12px;color:var(--text2);margin-top:4px">الإصدار 5.0</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">الإصدار 6.0</div>
     </div>
 
     <a class="about-info-row" href="tel:0661604014">
@@ -1194,7 +1140,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Hidden file input for restore -->
 <input type="file" id="restoreFileGlobal" accept=".json" style="display:none" onchange="handleRestoreFile(event)">
 
 <script>
@@ -1204,19 +1149,16 @@
 function drawAppIcon(canvas, size) {
   const ctx = canvas.getContext('2d');
   canvas.width = size; canvas.height = size;
-  // Black rounded bg
-  ctx.beginPath();
   const r = size * 0.18;
+  ctx.beginPath();
   ctx.moveTo(r, 0); ctx.lineTo(size-r, 0); ctx.quadraticCurveTo(size, 0, size, r);
   ctx.lineTo(size, size-r); ctx.quadraticCurveTo(size, size, size-r, size);
   ctx.lineTo(r, size); ctx.quadraticCurveTo(0, size, 0, size-r);
   ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.closePath();
   ctx.fillStyle = '#000000'; ctx.fill();
-  // Gold shine overlay
   const shine = ctx.createRadialGradient(size*0.35, size*0.28, 0, size*0.5, size*0.5, size*0.7);
   shine.addColorStop(0, 'rgba(255,245,120,0.18)'); shine.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = shine; ctx.fill();
-  // Gold text
   const grad = ctx.createLinearGradient(size*0.1, size*0.15, size*0.9, size*0.88);
   grad.addColorStop(0, '#FFFACD'); grad.addColorStop(0.35, '#D4AF37'); grad.addColorStop(0.7, '#C8960C'); grad.addColorStop(1, '#7B5100');
   ctx.fillStyle = grad;
@@ -1224,14 +1166,10 @@ function drawAppIcon(canvas, size) {
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('دج', size * 0.5, size * 0.52);
 }
-// Draw header logo
 const logoCanvas = document.getElementById('logoCanvas');
 if (logoCanvas) drawAppIcon(logoCanvas, 84);
-// Helper: generate icon as PNG data URL
 function genIcon(size) { const c=document.createElement('canvas'); drawAppIcon(c,size); return c.toDataURL('image/png'); }
-// Apple touch icon
 try { document.getElementById('appleTouchIcon').href = genIcon(180); } catch(e){}
-// Manifest with real PNG icons
 (function() {
   try {
     const manifest = {
@@ -1274,15 +1212,14 @@ let showChart = false;
 let deferredInstallPrompt = null;
 
 // ════════════════════════════════════════════════
-// SYNC STATE (jsonblob.com — بدون مفتاح)
+// SYNC STATE (npoint.io — بدون مفتاح)
 // ════════════════════════════════════════════════
-const SYNC_API = 'https://jsonblob.com/api/jsonBlob';
+const SYNC_API = 'https://api.npoint.io';
 let syncState = JSON.parse(localStorage.getItem('syncState') || 'null') || {
   connected: false, blobId: null, myName: '', autoSync: true, lastSynced: null
 };
 let syncTimer = null, syncBusy = false;
 
-// Expense name history for autocomplete
 let nameHistory = JSON.parse(localStorage.getItem('nameHistory') || '[]');
 
 // ============================================================
@@ -1373,7 +1310,6 @@ function renderCatManageList() {
     list.appendChild(item);
   });
 
-  // Build emoji picker
   const picker = document.getElementById('emojiPicker');
   picker.innerHTML = '';
   ALL_EMOJIS.forEach(em => {
@@ -1389,7 +1325,6 @@ function openEmojiPicker(idx) {
   activeEmojiTarget = idx;
   const wrap = document.getElementById('emojiPickerWrap');
   wrap.style.display = 'block';
-  // scroll into view
   wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
@@ -1402,9 +1337,7 @@ function selectEmoji(em) {
 }
 
 function openColorPicker(idx) {
-  // Simple inline color picker using palette
   activeEmojiTarget = null;
-  // Create a quick color modal inline
   const existing = document.getElementById('inlineColorPicker');
   if (existing) existing.remove();
 
@@ -1412,7 +1345,7 @@ function openColorPicker(idx) {
   wrap.id = 'inlineColorPicker';
   wrap.style.cssText = 'background:var(--surface3);border:1px solid var(--border);border-radius:14px;padding:12px;margin:8px 0;';
   wrap.innerHTML = `<div class="form-label" style="margin-bottom:8px">اختر لون الصنف</div><div class="color-options" id="colorOptsInner"></div>`;
-  
+
   const list = document.getElementById('catManageList');
   const items = list.querySelectorAll('.cat-manage-item');
   items[idx].insertAdjacentElement('afterend', wrap);
@@ -1424,8 +1357,7 @@ function openColorPicker(idx) {
     d.style.background = col;
     d.onclick = () => {
       editingCats[idx].color = col;
-      // derive bg
-      editingCats[idx].bg = col.replace(/^#/, '') ? col + '20' : col;
+      editingCats[idx].bg = col + '20';
       wrap.remove();
       renderCatManageList();
     };
@@ -1447,7 +1379,6 @@ function addNewCategory() {
 }
 
 function saveCategories() {
-  // Validate
   for (let c of editingCats) {
     if (!c.name.trim()) { showToast('يرجى تسمية جميع الأصناف', true); return; }
   }
@@ -1476,7 +1407,6 @@ function onNameInput(val) {
   if (!val.trim()) { list.classList.add('hidden'); acIndex = -1; return; }
 
   const matches = nameHistory.filter(n => n.includes(val) || n.startsWith(val));
-  // Also show items that match any character
   const broader = nameHistory.filter(n => n !== val && !matches.includes(n) && levenshtein(n.slice(0,val.length), val) <= 1);
   const combined = [...new Set([...matches, ...broader])].slice(0, 8);
 
@@ -1540,7 +1470,6 @@ function levenshtein(a, b) {
   return dp[a.length][b.length];
 }
 
-// Close autocomplete when clicking outside
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.autocomplete-wrap')) {
     const list = document.getElementById('acList');
@@ -1598,7 +1527,6 @@ function renderAll() {
     });
   }
 
-  // Summary
   const allMonth = expenses.filter(e => {
     const month = document.getElementById('monthFilter').value;
     return !month || e.date.startsWith(month);
@@ -1692,8 +1620,6 @@ function addExpense() {
 
   expenses.unshift(exp);
   localStorage.setItem('expenses', JSON.stringify(expenses));
-
-  // Save to autocomplete history
   saveNameToHistory(name);
 
   document.getElementById('expName').value = '';
@@ -1704,6 +1630,7 @@ function addExpense() {
   closeModal();
   renderAll();
   showToast('✅ تمت إضافة المصروف!');
+  if (syncState.connected) pushSync();
 }
 
 function deleteExpense(id) {
@@ -1712,6 +1639,7 @@ function deleteExpense(id) {
   localStorage.setItem('expenses', JSON.stringify(expenses));
   renderAll();
   showToast('🗑️ تم الحذف');
+  if (syncState.connected) pushSync();
 }
 
 function clearAll() {
@@ -1720,6 +1648,7 @@ function clearAll() {
   localStorage.setItem('expenses', JSON.stringify(expenses));
   renderAll();
   showToast('🗑️ تم مسح الكل');
+  if (syncState.connected) pushSync();
 }
 
 // ============================================================
@@ -1825,7 +1754,6 @@ async function exportBackup() {
   const dateStr = new Date().toISOString().split('T')[0];
   const filename = `مصاريف-نسخة-${dateStr}.json`;
 
-  // Try File System Access API first (lets user choose location)
   if ('showSaveFilePicker' in window) {
     try {
       const handle = await window.showSaveFilePicker({
@@ -1842,11 +1770,10 @@ async function exportBackup() {
       closeBackup();
       return;
     } catch (e) {
-      if (e.name === 'AbortError') return; // User cancelled
+      if (e.name === 'AbortError') return;
     }
   }
 
-  // Fallback: auto download
   saveFile(blob, filename);
   showToast('✅ تم تنزيل النسخة الاحتياطية!');
   closeBackup();
@@ -1903,7 +1830,6 @@ function handleRestoreFile(event) {
   reader.readAsText(file);
 }
 
-// Helper: save file
 function saveFile(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1969,7 +1895,6 @@ function triggerInstall() {
       deferredInstallPrompt = null;
     });
   } else {
-    // iOS
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS) {
       document.getElementById('iosModal').classList.add('open');
@@ -1989,9 +1914,8 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.className = 'toast' + (isError ? ' error' : ''), 2800);
 }
 
-
 // ════════════════════════════════════════════════
-// SYNC ENGINE (jsonblob.com)
+// SYNC ENGINE (npoint.io)
 // ════════════════════════════════════════════════
 function getDeviceId(){let id=localStorage.getItem('deviceId');if(!id){id='dev_'+Math.random().toString(36).slice(2,10);localStorage.setItem('deviceId',id);}return id;}
 function buildSyncPayload(){return{version:2,updatedAt:new Date().toISOString(),updatedBy:syncState.myName||'مجهول',deviceId:getDeviceId(),budget,expenses,categories:CATS,nameHistory,members:refreshMembers()};}
@@ -2007,10 +1931,10 @@ async function createSyncRoom(){
   if(!n){showToast('أدخل اسمك أولاً ⚠️',true);document.getElementById('syncMyName').focus();return;}
   syncState.myName=n; setSyncUI('syncing','⏳','جاري إنشاء الغرفة...','يرجى الانتظار');
   try{
-    const res=await fetch(SYNC_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildSyncPayload())});
+    const res=await fetch(SYNC_API+'/documents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildSyncPayload())});
     if(!res.ok)throw new Error('خطأ في الخادم: '+res.status);
-    const location=res.headers.get('Location')||'';
-    const blobId=location.split('/').pop();
+    const data=await res.json();
+    const blobId=data.id;
     if(!blobId)throw new Error('لم يتم الحصول على معرّف الغرفة');
     syncState.connected=true;syncState.blobId=blobId;syncState.lastSynced=new Date().toISOString();
     saveSyncState();showConnectedUI();showToast('✅ تم إنشاء الغرفة!');
@@ -2146,9 +2070,6 @@ async function shareRoomCode(){
   if(navigator.clipboard){await navigator.clipboard.writeText(txt);showToast('✅ تم نسخ كود الغرفة!');}
 }
 
-// Trigger sync after add/delete
-const _origAdd = addExpense;
-
 // ============================================================
 // SETTINGS MENU
 // ============================================================
@@ -2163,16 +2084,12 @@ function closeSettingsMenu() {
   document.getElementById('settingsMenu').classList.remove('open');
 }
 
-// Close menu when clicking outside
 document.addEventListener('click', function(e) {
   if (!e.target.closest('#settingsMenuBtn') && !e.target.closest('#settingsMenu')) {
     closeSettingsMenu();
   }
 });
 
-// ============================================================
-// DARK / LIGHT MODE
-// ============================================================
 const lightVars = {
   '--bg': '#f4f6fb', '--surface': '#ffffff', '--surface2': '#eef1f8',
   '--surface3': '#e4e8f3', '--text': '#1a1d2e', '--text2': '#6b7280',
@@ -2199,7 +2116,6 @@ function toggleDarkLight() {
   applyMode(isDarkMode);
 }
 
-// Apply on load
 applyMode(isDarkMode);
 
 // ============================================================
