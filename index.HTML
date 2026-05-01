@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="مصاريف">
+<title>دفتر المصاريف</title>
+<link id="manifestLink" rel="manifest">
+<link id="appleTouchIcon" rel="apple-touch-icon">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --surface3: #2a2f45;
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --green: #22c55e;
+    --red: #ef4444;
+    --orange: #f97316;
+    --yellow: #eab308;
+    --gold: #D4AF37;
+    --gold2: #FFF0A0;
+    --text: #f0f2ff;
+    --text2: #9ba3bf;
+    --border: rgba(255,255,255,0.07);
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --radius: 16px;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 100px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #12152a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 16px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  /* Logo */
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1.5px rgba(212,175,55,0.5), 0 4px 16px rgba(212,175,55,0.3);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .logo-icon canvas { width: 42px; height: 42px; }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-title {
+    font-size: 18px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FFF0A0, #D4AF37, #8B6914);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  .app-subtitle {
+    font-size: 10px;
+    color: var(--text2);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 6px;
+    position: relative;
+  }
+
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 17px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .icon-btn:active { transform: scale(0.92); background: var(--surface3); }
+  .icon-btn.install-btn {
+    color: var(--accent);
+    border-color: rgba(79,142,247,0.3);
+    background: rgba(79,142,247,0.1);
+  }
+
+  /* Budget Summary Card */
+  .budget-card {
+    margin: 14px 16px;
+    background: linear-gradient(135deg, #1e2540 0%, #2a1f4a 100%);
+    border: 1px solid rgba(79,142,247,0.2);
+    border-radius: 20px;
+    padding: 18px 20px;
+    box-shadow: var(--card-shadow), 0 0 40px rgba(79,142,247,0.05);
+  }
+
+  .budget-label {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .budget-amount {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .budget-amount.remaining { color: var(--green); }
+  .budget-amount.over { color: var(--red); }
+
+  .budget-progress-track {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .budget-progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .budget-progress-fill.danger { background: linear-gradient(90deg, var(--orange), var(--red)); }
+
+  .budget-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .budget-stat { text-align: center; flex: 1; }
+  .stat-divider { width: 1px; background: var(--border); margin: 0 8px; }
+
+  .stat-value { font-size: 16px; font-weight: 700; }
+  .stat-value.spent { color: var(--red); }
+  .stat-value.budget { color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  /* Budget Input */
+  .budget-input-row {
+    display: flex;
+    gap: 8px;
+    margin: 0 16px 14px;
+  }
+
+  .budget-input-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .budget-input-wrapper label {
+    position: absolute;
+    top: -8px; right: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--bg);
+    padding: 0 4px;
+    letter-spacing: 0.5px;
+  }
+
+  input[type="number"], input[type="text"], input[type="date"], input[type="month"], select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    padding: 12px 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color-scheme: dark;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+  }
+
+  input[type="month"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(0.8);
+    cursor: pointer;
+  }
+
+  /* Category Filter Tabs */
+  .tabs-scroll {
+    overflow-x: auto;
+    padding: 0 16px 12px;
+    display: flex;
+    gap: 8px;
+    scrollbar-width: none;
+  }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+
+  .tab {
+    white-space: nowrap;
+    padding: 7px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 12px rgba(79,142,247,0.3);
+  }
+
+  /* Expense List */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px 10px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .sort-btn {
+    font-size: 12px;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .expenses-list {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .expense-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .expense-card:active { transform: scale(0.98); }
+
+  .expense-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+
+  .expense-info { flex: 1; min-width: 0; }
+
+  .expense-name {
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .expense-meta {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 2px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .cat-badge {
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .expense-right { text-align: left; flex-shrink: 0; }
+  .expense-total { font-size: 16px; font-weight: 900; }
+  .expense-unit { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  .delete-btn {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.2);
+    color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .delete-btn:active { background: rgba(239,68,68,0.3); transform: scale(0.9); }
+
+  /* FAB Add Button */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 15px 28px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(79,142,247,0.4);
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    z-index: 50;
+    white-space: nowrap;
+  }
+  .fab:active { transform: translateX(-50%) scale(0.95); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    padding: 20px 18px 36px;
+    width: 100%;
+    max-width: 500px;
+    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 100px;
+    margin: 0 auto 18px;
+  }
+
+  .modal-title {
+    font-size: 19px;
+    font-weight: 900;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .form-group { margin-bottom: 13px; position: relative; }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text2);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .cat-option {
+    padding: 9px 4px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .cat-option.selected {
+    border-color: var(--accent);
+    background: rgba(79,142,247,0.15);
+  }
+  .cat-option .emoji { font-size: 20px; }
+  .cat-option .name { font-size: 10px; color: var(--text2); margin-top: 3px; }
+  .cat-option.selected .name { color: var(--accent); }
+  .cat-option .edit-cat-icon {
+    display: none;
+    position: absolute;
+    top: -6px; left: -6px;
+    width: 18px; height: 18px;
+    background: var(--accent);
+    border-radius: 50%;
+    font-size: 10px;
+    align-items: center; justify-content: center;
+    color: white;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .btn-secondary {
+    padding: 10px 16px;
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:active { transform: scale(0.97); }
+
+  /* Chart */
+  .chart-section {
+    margin: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+  }
+  .chart-title { font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  canvas { width: 100% !important; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text2); }
+  .empty .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+  .empty p { font-size: 14px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--green);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+
+  /* Action Buttons */
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0 16px 14px;
+  }
+
+  .action-btn {
+    padding: 11px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    transition: all 0.2s;
+  }
+  .action-btn:active { transform: scale(0.96); }
+  .action-btn.danger { border-color: rgba(239,68,68,0.3); color: var(--red); }
+  .action-btn.success { border-color: rgba(34,197,94,0.3); color: var(--green); }
+  .action-btn.info { border-color: rgba(79,142,247,0.3); color: var(--accent); }
+  .action-btn.warning { border-color: rgba(234,179,8,0.3); color: var(--yellow); }
+
+  /* Autocomplete */
+  .autocomplete-wrap { position: relative; }
+
+  .autocomplete-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0; left: 0;
+    background: var(--surface3);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    z-index: 300;
+    max-height: 180px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    scrollbar-width: none;
+  }
+  .autocomplete-list::-webkit-scrollbar { display: none; }
+  .autocomplete-list.hidden { display: none; }
+
+  .autocomplete-item {
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .autocomplete-item:last-child { border-bottom: none; }
+  .autocomplete-item:hover, .autocomplete-item.ac-selected { background: rgba(79,142,247,0.15); }
+  .autocomplete-item .ac-icon { font-size: 12px; color: var(--text2); }
+
+  /* Settings Modal */
+  .settings-modal .modal { max-height: 85vh; }
+
+  .cat-manage-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+
+  .cat-manage-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  .cat-emoji-display {
+    font-size: 24px;
+    width: 36px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .cat-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0;
+    outline: none;
+  }
+  .cat-name-input:focus { color: var(--accent); }
+
+  .cat-color-swatch {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+  }
+
+  .cat-del-btn {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.2);
+    color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  /* Emoji Picker */
+  .emoji-picker {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-top: 6px;
+  }
+
+  .emoji-picker.hidden { display: none; }
+
+  .ep-emoji {
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    line-height: 1;
+  }
+  .ep-emoji:hover { background: rgba(255,255,255,0.1); }
+
+  /* Install banner */
+  .install-banner {
+    margin: 0 16px 14px;
+    background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,92,191,0.15));
+    border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .install-banner.hidden { display: none; }
+
+  .install-banner-text { flex: 1; font-size: 13px; font-weight: 600; }
+  .install-banner-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  .install-banner-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* Color picker options */
+  .color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .color-opt {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s;
+  }
+  .color-opt:hover { transform: scale(1.2); }
+  .color-opt.selected { border-color: white; transform: scale(1.15); }
+
+  /* Backup modal */
+  .backup-section {
+    background: var(--surface2);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .backup-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text2);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* Drag handle for reorder */
+  .drag-handle { color: var(--text2); font-size: 16px; cursor: grab; padding: 0 2px; }
+
+  @media (max-width: 380px) {
+    .cat-grid { grid-template-columns: repeat(3, 1fr); }
+    .action-row { grid-template-columns: 1fr 1fr; }
+    .fab { padding: 13px 22px; font-size: 14px; }
+  }
+
+  /* Settings Dropdown Menu */
+  .settings-menu {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    min-width: 190px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 500;
+    overflow: hidden;
+    animation: fadeIn 0.18s ease;
+    display: none;
+  }
+  .settings-menu.open { display: block; }
+  .settings-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--border);
+  }
+  .settings-menu-item:last-child { border-bottom: none; }
+  .settings-menu-item:active { background: var(--surface3); }
+  .settings-menu-item .sm-icon { font-size: 18px; width: 24px; text-align: center; }
+
+  /* About Modal */
+  .about-info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 13px 15px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+  }
+  .about-info-row:active { background: var(--surface3); }
+  .about-info-icon { font-size: 22px; width: 32px; text-align: center; flex-shrink: 0; }
+  .about-info-label { font-size: 11px; color: var(--text2); font-weight: 600; }
+  .about-info-value { font-size: 14px; font-weight: 700; margin-top: 2px; direction: ltr; text-align: right; }
+
+  .toggle-dark-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 13px 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+
+  .modal::-webkit-scrollbar { width: 4px; }
+  .modal::-webkit-scrollbar-track { background: transparent; }
+  .modal::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
+
+  /* ── SYNC ── */
+  .sync-status-card { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+  .sync-status-card.disconnected { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
+  .sync-status-card.connected { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
+  .sync-status-card.syncing { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); }
+  .sync-status-icon { font-size: 26px; }
+  .sync-status-text { flex: 1; }
+  .sync-status-title { font-size: 14px; font-weight: 700; }
+  .sync-status-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .sync-section { background: var(--surface2); border-radius: 13px; padding: 13px; margin-bottom: 10px; }
+  .sync-section-title { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .room-code-display { background: #000; border: 1px solid rgba(212,175,55,0.5); border-radius: 10px; padding: 12px; text-align: center; font-size: 16px; font-weight: 900; letter-spacing: 2px; color: #D4AF37; font-family: monospace; margin-bottom: 10px; word-break: break-all; }
+  .sync-friends-list { display: flex; flex-direction: column; gap: 7px; margin-top: 6px; }
+  .sync-friend-item { display: flex; align-items: center; gap: 8px; background: var(--surface3); border-radius: 9px; padding: 8px 11px; }
+  .sync-friend-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+  .sync-friend-name { flex: 1; font-size: 12px; font-weight: 600; }
+  .sync-friend-time { font-size: 10px; color: var(--text2); }
+  .sync-toggle-row { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-radius: 11px; padding: 11px 13px; margin-bottom: 10px; }
+  .toggle-track { width: 44px; height: 24px; border-radius: 100px; background: var(--green); cursor: pointer; position: relative; transition: background 0.3s; flex-shrink: 0; }
+  .toggle-knob { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: transform 0.3s; }
+  .toggle-track.off { background: var(--surface3); }
+  .toggle-track.off .toggle-knob { transform: translateX(-20px); }
+
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo-wrap">
+      <div class="logo-icon">
+        <canvas id="logoCanvas" width="84" height="84"></canvas>
+      </div>
+      <div class="logo-text">
+        <div class="app-title">دفتر المصاريف</div>
+        <div class="app-subtitle">تتبع ذكي لنفقاتك</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="icon-btn" id="syncBtn" onclick="openSync()" title="المزامنة" style="position:relative">🔄<div class="sync-dot" id="syncDot" style="position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface2)"></div></div>
+      <div class="icon-btn install-btn hidden" id="installBtn" onclick="triggerInstall()" title="تثبيت التطبيق">⬇️</div>
+      <div class="icon-btn" onclick="openShare()" title="مشاركة">🔗</div>
+      <div class="icon-btn" onclick="toggleChart()">📊</div>
+      <div class="icon-btn" onclick="toggleSettingsMenu()" title="الإعدادات" id="settingsMenuBtn">⚙️</div>
+    </div>
+  </div>
+
+  <!-- Settings Dropdown -->
+  <div class="settings-menu" id="settingsMenu">
+    <div class="settings-menu-item" onclick="openSettings();closeSettingsMenu()">
+      <span class="sm-icon">🗂️</span> إدارة الأصناف
+    </div>
+    <div class="settings-menu-item" onclick="toggleDarkLight();closeSettingsMenu()">
+      <span class="sm-icon" id="darkModeIcon">🌙</span> <span id="darkModeLabel">الوضع الليلي</span>
+    </div>
+    <div class="settings-menu-item" onclick="openAbout();closeSettingsMenu()">
+      <span class="sm-icon">ℹ️</span> حول التطبيق
+    </div>
+  </div>
+
+  <!-- Budget input -->
+  <div class="budget-input-row">
+    <div class="budget-input-wrapper">
+      <label>الميزانية الشهرية</label>
+      <input type="number" id="budgetInput" placeholder="40000" oninput="updateBudget()" dir="ltr">
+    </div>
+    <div class="budget-input-wrapper" style="max-width:150px">
+      <label>الشهر</label>
+      <input type="month" id="monthFilter" oninput="renderAll()" style="padding:11px 10px;">
+    </div>
+  </div>
+</div>
+
+<!-- Install Banner -->
+<div class="install-banner hidden" id="installBanner">
+  <div style="font-size:28px">📲</div>
+  <div class="install-banner-text">
+    ثبّت التطبيق على هاتفك
+    <div class="install-banner-sub">يعمل بدون انترنت ويحفظ بياناتك</div>
+  </div>
+  <button class="install-banner-btn" onclick="triggerInstall()">تثبيت</button>
+  <div onclick="document.getElementById('installBanner').classList.add('hidden')" style="cursor:pointer;color:var(--text2);font-size:18px;padding:4px">✕</div>
+</div>
+
+<!-- Budget Card -->
+<div class="budget-card">
+  <div class="budget-label">الباقي من الميزانية</div>
+  <div class="budget-amount remaining" id="remainingAmount">0 دج</div>
+  <div class="budget-progress-track">
+    <div class="budget-progress-fill" id="budgetBar" style="width:0%"></div>
+  </div>
+  <div class="budget-row">
+    <div class="budget-stat">
+      <div class="stat-value spent" id="totalSpent">0</div>
+      <div class="stat-label">المصاريف 💸</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="budget-stat">
+      <div class="stat-value budget" id="budgetDisplay">0</div>
+      <div class="stat-label">الميزانية 💰</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="budget-stat">
+      <div class="stat-value" id="expenseCount" style="color:var(--yellow)">0</div>
+      <div class="stat-label">المدخلات 📋</div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Tabs -->
+<div class="tabs-scroll" id="catTabs"></div>
+
+<!-- Action Buttons -->
+<div class="action-row">
+  <button class="action-btn danger" onclick="clearAll()">🗑️ مسح الكل</button>
+  <button class="action-btn success" onclick="exportCSV()">📊 تصدير Excel</button>
+  <button class="action-btn info" onclick="openBackup()">💾 نسخة احتياطية</button>
+  <button class="action-btn warning" onclick="restoreBackup()">📂 استرجاع</button>
+</div>
+
+<!-- Chart Section (hidden by default) -->
+<div class="chart-section" id="chartSection" style="display:none">
+  <div class="chart-title">توزيع المصاريف</div>
+  <canvas id="myChart" height="220"></canvas>
+  <div class="legend" id="chartLegend"></div>
+</div>
+
+<!-- Expenses Section -->
+<div class="section-header">
+  <div class="section-title">المصاريف</div>
+  <div class="sort-btn" onclick="toggleSort()">ترتيب ⇅</div>
+</div>
+
+<div class="expenses-list" id="expensesList"></div>
+
+<!-- FAB -->
+<button class="fab" onclick="openModal()">
+  ＋ إضافة مصروف
+</button>
+
+<!-- ===== ADD EXPENSE MODAL ===== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">➕ مصروف جديد</div>
+
+    <div class="form-group">
+      <label class="form-label">اسم المصروف</label>
+      <div class="autocomplete-wrap">
+        <input type="text" id="expName" placeholder="مثال: تمر، بطاطا..." autocomplete="off" oninput="onNameInput(this.value)" onkeydown="onNameKey(event)">
+        <div class="autocomplete-list hidden" id="acList"></div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">السعر (دج)</label>
+        <input type="number" id="expPrice" placeholder="100" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label class="form-label">الكمية</label>
+        <input type="number" id="expQty" placeholder="1" value="1" dir="ltr">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">التاريخ</label>
+      <input type="date" id="expDate">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">الصنف</label>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+
+    <button class="btn-primary" onclick="addExpense()">✅ إضافة المصروف</button>
+    <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="closeModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- ===== SETTINGS MODAL (Category Manager) ===== -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ إدارة الأصناف</div>
+
+    <div class="cat-manage-list" id="catManageList"></div>
+
+    <button class="btn-secondary" onclick="addNewCategory()" style="width:100%;margin-bottom:10px">
+      ＋ إضافة صنف جديد
+    </button>
+
+    <div id="emojiPickerWrap" style="display:none">
+      <label class="form-label">اختر رمز الصنف</label>
+      <div class="emoji-picker" id="emojiPicker"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-primary" onclick="saveCategories()">💾 حفظ الأصناف</button>
+    <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="closeSettings()">إلغاء</button>
+  </div>
+</div>
+
+<!-- ===== BACKUP MODAL ===== -->
+<div class="modal-overlay" id="backupModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💾 النسخ الاحتياطي</div>
+
+    <div class="backup-section">
+      <div class="backup-title">📤 حفظ نسخة احتياطية</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">سيتم حفظ جميع المصاريف والإعدادات كملف JSON يمكنك اختيار مكان حفظه</p>
+      <div id="backupStats" style="font-size:13px;color:var(--text);margin-bottom:12px"></div>
+      <button class="btn-primary" onclick="exportBackup()">💾 حفظ النسخة الاحتياطية</button>
+    </div>
+
+    <div class="backup-section">
+      <div class="backup-title">📥 استرجاع نسخة احتياطية</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">اختر ملف JSON محفوظ مسبقاً لاسترجاع بياناتك</p>
+      <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="handleRestoreFile(event)">
+      <button class="btn-secondary" style="width:100%;color:var(--yellow);border-color:rgba(234,179,8,0.3)" onclick="document.getElementById('restoreFile').click()">
+        📂 اختر ملف الاسترجاع
+      </button>
+    </div>
+
+    <button class="btn-secondary" style="width:100%;margin-top:4px" onclick="closeBackup()">إغلاق</button>
+  </div>
+</div>
+
+<!-- iOS Install Instructions Modal -->
+<div class="modal-overlay" id="iosModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📲 تثبيت على iPhone / iPad</div>
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-size:15px;line-height:2;color:var(--text)">
+        <p>١. اضغط على زر <strong style="color:var(--accent)">المشاركة</strong> في سفارة المتصفح</p>
+        <p style="font-size:26px">⬆️</p>
+        <p>٢. اختر <strong style="color:var(--accent)">"إضافة إلى الشاشة الرئيسية"</strong></p>
+        <p style="font-size:26px">➕</p>
+        <p>٣. اضغط <strong style="color:var(--green)">"إضافة"</strong></p>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="document.getElementById('iosModal').classList.remove('open')" style="margin-top:10px">حسناً</button>
+  </div>
+</div>
+
+
+<!-- ===== SYNC MODAL ===== -->
+<div class="modal-overlay" id="syncModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔄 المزامنة مع الأصدقاء</div>
+
+    <div class="sync-status-card disconnected" id="syncStatusCard">
+      <div class="sync-status-icon" id="syncStatusIcon">🔴</div>
+      <div class="sync-status-text">
+        <div class="sync-status-title" id="syncStatusTitle">غير متصل</div>
+        <div class="sync-status-sub" id="syncStatusSub">لم تنضم لأي غرفة مشتركة بعد</div>
+      </div>
+    </div>
+
+    <div class="sync-section" id="syncCreateSection">
+      <div class="sync-section-title">📡 إنشاء غرفة مشتركة جديدة</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.7">أنشئ غرفة وشارك الكود مع أصدقائك حتى يتمكنوا من رؤية مصاريف الغرفة</p>
+      <div class="form-group">
+        <label class="form-label">اسمك في الغرفة</label>
+        <input type="text" id="syncMyName" placeholder="مثال: نور، العيلة..." dir="rtl">
+      </div>
+      <button class="btn-primary" onclick="createSyncRoom()">🚀 إنشاء غرفة مشتركة</button>
+    </div>
+
+    <div class="sync-section">
+      <div class="sync-section-title">🔑 الانضمام لغرفة موجودة</div>
+      <div class="form-group">
+        <label class="form-label">اسمك في الغرفة</label>
+        <input type="text" id="syncJoinName" placeholder="اسمك..." dir="rtl">
+      </div>
+      <div class="form-group">
+        <label class="form-label">كود الغرفة</label>
+        <input type="text" id="syncRoomCode" placeholder="الصق كود الغرفة هنا..." dir="ltr" style="letter-spacing:1px;font-size:13px;">
+      </div>
+      <button class="btn-secondary" style="width:100%" onclick="joinSyncRoom()">🔗 انضم للغرفة</button>
+    </div>
+
+    <div id="syncConnectedSection" style="display:none">
+      <div class="sync-section">
+        <div class="sync-section-title">🔑 كود الغرفة — شاركه مع أصدقائك</div>
+        <div class="room-code-display" id="roomCodeDisplay">—</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-secondary" style="flex:1" onclick="copyRoomCode()">📋 نسخ</button>
+          <button class="btn-secondary" style="flex:1" onclick="shareRoomCode()">📤 مشاركة</button>
+        </div>
+      </div>
+      <div class="sync-section">
+        <div class="sync-section-title">👥 أعضاء الغرفة</div>
+        <div class="sync-friends-list" id="syncFriendsList"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="btn-primary" style="flex:2" onclick="manualSync()">🔄 مزامنة الآن</button>
+        <button class="btn-secondary" style="flex:1;color:var(--red);border-color:rgba(239,68,68,0.3)" onclick="disconnectSync()">قطع</button>
+      </div>
+      <div class="sync-toggle-row">
+        <span style="flex:1;font-size:13px;font-weight:600">مزامنة تلقائية كل دقيقة</span>
+        <div class="toggle-track" id="autoSyncToggle" onclick="toggleAutoSync()">
+          <div class="toggle-knob" id="autoSyncKnob"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-secondary" style="width:100%" onclick="document.getElementById('syncModal').classList.remove('open')">إغلاق</button>
+  </div>
+</div>
+
+<!-- ===== ABOUT MODAL ===== -->
+<div class="modal-overlay" id="aboutModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">ℹ️ حول التطبيق</div>
+
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:72px;height:72px;border-radius:20px;background:#000;box-shadow:0 0 0 2px rgba(212,175,55,0.6),0 8px 24px rgba(212,175,55,0.2);margin:0 auto 12px;display:flex;align-items:center;justify-content:center">
+        <canvas id="aboutIconCanvas" width="72" height="72"></canvas>
+      </div>
+      <div style="font-size:20px;font-weight:900;background:linear-gradient(135deg,#FFF0A0,#D4AF37,#8B6914);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">دفتر المصاريف</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">الإصدار 5.0</div>
+    </div>
+
+    <a class="about-info-row" href="tel:0661604014">
+      <span class="about-info-icon">📞</span>
+      <div>
+        <div class="about-info-label">المطوّر</div>
+        <div class="about-info-value" style="font-size:15px;direction:rtl">لطرش نورالدين</div>
+        <div class="about-info-label" style="margin-top:4px">0661604014</div>
+      </div>
+    </a>
+
+    <a class="about-info-row" href="https://t.me/+213661604014" target="_blank" style="border-color:rgba(39,174,229,0.3)">
+      <span class="about-info-icon">✈️</span>
+      <div>
+        <div class="about-info-label">Telegram</div>
+        <div class="about-info-value" style="color:#29b6f6">0661604014</div>
+      </div>
+    </a>
+
+    <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="document.getElementById('aboutModal').classList.remove('open')">إغلاق</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Hidden file input for restore -->
+<input type="file" id="restoreFileGlobal" accept=".json" style="display:none" onchange="handleRestoreFile(event)">
+
+<script>
+// ════════════════════════════════════════════════
+// ICON — golden دج on black
+// ════════════════════════════════════════════════
+function drawAppIcon(canvas, size) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = size; canvas.height = size;
+  // Black rounded bg
+  ctx.beginPath();
+  const r = size * 0.18;
+  ctx.moveTo(r, 0); ctx.lineTo(size-r, 0); ctx.quadraticCurveTo(size, 0, size, r);
+  ctx.lineTo(size, size-r); ctx.quadraticCurveTo(size, size, size-r, size);
+  ctx.lineTo(r, size); ctx.quadraticCurveTo(0, size, 0, size-r);
+  ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.closePath();
+  ctx.fillStyle = '#000000'; ctx.fill();
+  // Gold shine overlay
+  const shine = ctx.createRadialGradient(size*0.35, size*0.28, 0, size*0.5, size*0.5, size*0.7);
+  shine.addColorStop(0, 'rgba(255,245,120,0.18)'); shine.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = shine; ctx.fill();
+  // Gold text
+  const grad = ctx.createLinearGradient(size*0.1, size*0.15, size*0.9, size*0.88);
+  grad.addColorStop(0, '#FFFACD'); grad.addColorStop(0.35, '#D4AF37'); grad.addColorStop(0.7, '#C8960C'); grad.addColorStop(1, '#7B5100');
+  ctx.fillStyle = grad;
+  ctx.font = '900 ' + Math.round(size * 0.50) + 'px Cairo, Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('دج', size * 0.5, size * 0.52);
+}
+// Draw header logo
+const logoCanvas = document.getElementById('logoCanvas');
+if (logoCanvas) drawAppIcon(logoCanvas, 84);
+// Helper: generate icon as PNG data URL
+function genIcon(size) { const c=document.createElement('canvas'); drawAppIcon(c,size); return c.toDataURL('image/png'); }
+// Apple touch icon
+try { document.getElementById('appleTouchIcon').href = genIcon(180); } catch(e){}
+// Manifest with real PNG icons
+(function() {
+  try {
+    const manifest = {
+      name: "دفتر المصاريف", short_name: "مصاريف",
+      description: "تطبيق تتبع المصاريف الشهرية",
+      start_url: "./", display: "standalone",
+      background_color: "#000000", theme_color: "#000000",
+      orientation: "portrait-primary", lang: "ar", dir: "rtl",
+      icons: [
+        { src: genIcon(192), sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: genIcon(512), sizes: "512x512", type: "image/png", purpose: "any maskable" }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+    document.getElementById('manifestLink').href = URL.createObjectURL(blob);
+  } catch(e) {}
+})();
+
+// ============================================================
+// DATA
+// ============================================================
+const DEFAULT_CATS = [
+  { id: 'معيشة',  name: 'معيشة',  emoji: '🛒', color: '#4f8ef7', bg: '#1a2a4a' },
+  { id: 'ترفيه',  name: 'ترفيه',  emoji: '🎮', color: '#ec4899', bg: '#3a1a2a' },
+  { id: 'صحة',    name: 'صحة',    emoji: '🏥', color: '#22c55e', bg: '#1a3a2a' },
+  { id: 'تنقل',   name: 'تنقل',   emoji: '🚗', color: '#f97316', bg: '#3a2a1a' },
+  { id: 'تعليم',  name: 'تعليم',  emoji: '📚', color: '#a855f7', bg: '#2a1a3a' },
+  { id: 'مطعم',   name: 'مطعم',   emoji: '🍽️', color: '#eab308', bg: '#3a2a1a' },
+  { id: 'ملابس',  name: 'ملابس',  emoji: '👔', color: '#14b8a6', bg: '#1a3a3a' },
+  { id: 'أخرى',   name: 'أخرى',   emoji: '📦', color: '#9ba3bf', bg: '#2a2a3a' },
+];
+
+let CATS = JSON.parse(localStorage.getItem('cats') || JSON.stringify(DEFAULT_CATS));
+let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+let budget = parseFloat(localStorage.getItem('budget') || '40000');
+let selectedCat = CATS[0]?.id || 'معيشة';
+let filterCatActive = 'all';
+let sortAsc = false;
+let showChart = false;
+let deferredInstallPrompt = null;
+
+// ════════════════════════════════════════════════
+// SYNC STATE (GitHub Gist)
+// ════════════════════════════════════════════════
+const SYNC_API = 'https://api.github.com/gists';
+const GITHUB_TOKEN = ''; // اتركه فارغاً للقراءة العامة — أو ضع GitHub Token للكتابة
+let syncState = JSON.parse(localStorage.getItem('syncState') || 'null') || {
+  connected: false, blobId: null, myName: '', autoSync: true, lastSynced: null
+};
+let syncTimer = null, syncBusy = false;
+
+// Expense name history for autocomplete
+let nameHistory = JSON.parse(localStorage.getItem('nameHistory') || '[]');
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('budgetInput').value = budget;
+const today = new Date();
+const mm = String(today.getMonth()+1).padStart(2,'0');
+document.getElementById('monthFilter').value = `${today.getFullYear()}-${mm}`;
+document.getElementById('expDate').value = today.toISOString().split('T')[0];
+
+buildCatGrid();
+buildCatTabs();
+renderAll();
+updateSyncDot();
+if (syncState.connected && syncState.blobId) { pullSync(); if (syncState.autoSync) startAutoSync(); }
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+function buildCatGrid() {
+  const catGrid = document.getElementById('catGrid');
+  catGrid.innerHTML = '';
+  CATS.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'cat-option' + (c.id === selectedCat ? ' selected' : '');
+    d.dataset.catId = c.id;
+    d.innerHTML = `<div class="emoji">${c.emoji}</div><div class="name">${c.name}</div>`;
+    d.onclick = () => {
+      selectedCat = c.id;
+      document.querySelectorAll('.cat-option').forEach(x => x.classList.remove('selected'));
+      d.classList.add('selected');
+    };
+    catGrid.appendChild(d);
+  });
+}
+
+function buildCatTabs() {
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = `<div class="tab ${filterCatActive==='all'?'active':''}" onclick="filterCat('all', this)">الكل</div>`;
+  CATS.forEach(c => {
+    const t = document.createElement('div');
+    t.className = 'tab' + (filterCatActive === c.id ? ' active' : '');
+    t.innerHTML = `${c.emoji} ${c.name}`;
+    t.onclick = () => filterCat(c.id, t);
+    tabs.appendChild(t);
+  });
+}
+
+function getCat(id) {
+  return CATS.find(c => c.id === id) || CATS[CATS.length-1] || DEFAULT_CATS[7];
+}
+
+// ============================================================
+// SETTINGS (Category Manager)
+// ============================================================
+const ALL_EMOJIS = ['🛒','🏠','🍽️','🚗','🏥','📚','👔','🎮','📦','💊','✈️','🎓','⚡','💧','📱','🎁','🏋️','🐾','🌿','☕','🍕','🛍️','🔧','💈','🎭','📷','🎵','⚽','🏊','🚲','🍔','🧴','💡','🛁','🚿','🖥️','🔑','📝','🎂','🍰','🥦','🥩','🧀','🥚','🍞','🥛','🧃','🫙','🥫','🛺','🚌','🚂','⛽'];
+const COLOR_PALETTE = ['#4f8ef7','#ec4899','#22c55e','#f97316','#a855f7','#eab308','#14b8a6','#ef4444','#06b6d4','#84cc16','#f59e0b','#8b5cf6','#10b981','#3b82f6','#e11d48','#7c3aed'];
+
+let editingCats = [];
+let activeEmojiTarget = null;
+
+function openSettings() {
+  editingCats = JSON.parse(JSON.stringify(CATS));
+  renderCatManageList();
+  document.getElementById('emojiPickerWrap').style.display = 'none';
+  document.getElementById('settingsModal').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('open');
+}
+
+function renderCatManageList() {
+  const list = document.getElementById('catManageList');
+  list.innerHTML = '';
+  editingCats.forEach((c, idx) => {
+    const item = document.createElement('div');
+    item.className = 'cat-manage-item';
+    item.dataset.idx = idx;
+    item.innerHTML = `
+      <span class="drag-handle">⠿</span>
+      <span class="cat-emoji-display" onclick="openEmojiPicker(${idx})" title="تغيير الرمز">${c.emoji}</span>
+      <input class="cat-name-input" value="${c.name}" oninput="editingCats[${idx}].name=this.value" placeholder="اسم الصنف">
+      <div class="cat-color-swatch" style="background:${c.color}" onclick="openColorPicker(${idx})" title="تغيير اللون"></div>
+      <div class="cat-del-btn" onclick="deleteEditingCat(${idx})">✕</div>
+    `;
+    list.appendChild(item);
+  });
+
+  // Build emoji picker
+  const picker = document.getElementById('emojiPicker');
+  picker.innerHTML = '';
+  ALL_EMOJIS.forEach(em => {
+    const s = document.createElement('span');
+    s.className = 'ep-emoji';
+    s.textContent = em;
+    s.onclick = () => selectEmoji(em);
+    picker.appendChild(s);
+  });
+}
+
+function openEmojiPicker(idx) {
+  activeEmojiTarget = idx;
+  const wrap = document.getElementById('emojiPickerWrap');
+  wrap.style.display = 'block';
+  // scroll into view
+  wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function selectEmoji(em) {
+  if (activeEmojiTarget === null) return;
+  editingCats[activeEmojiTarget].emoji = em;
+  document.getElementById('emojiPickerWrap').style.display = 'none';
+  renderCatManageList();
+  activeEmojiTarget = null;
+}
+
+function openColorPicker(idx) {
+  // Simple inline color picker using palette
+  activeEmojiTarget = null;
+  // Create a quick color modal inline
+  const existing = document.getElementById('inlineColorPicker');
+  if (existing) existing.remove();
+
+  const wrap = document.createElement('div');
+  wrap.id = 'inlineColorPicker';
+  wrap.style.cssText = 'background:var(--surface3);border:1px solid var(--border);border-radius:14px;padding:12px;margin:8px 0;';
+  wrap.innerHTML = `<div class="form-label" style="margin-bottom:8px">اختر لون الصنف</div><div class="color-options" id="colorOptsInner"></div>`;
+  
+  const list = document.getElementById('catManageList');
+  const items = list.querySelectorAll('.cat-manage-item');
+  items[idx].insertAdjacentElement('afterend', wrap);
+
+  const inner = document.getElementById('colorOptsInner');
+  COLOR_PALETTE.forEach(col => {
+    const d = document.createElement('div');
+    d.className = 'color-opt' + (editingCats[idx].color === col ? ' selected' : '');
+    d.style.background = col;
+    d.onclick = () => {
+      editingCats[idx].color = col;
+      // derive bg
+      editingCats[idx].bg = col.replace(/^#/, '') ? col + '20' : col;
+      wrap.remove();
+      renderCatManageList();
+    };
+    inner.appendChild(d);
+  });
+}
+
+function deleteEditingCat(idx) {
+  if (editingCats.length <= 1) { showToast('يجب أن يكون هناك صنف واحد على الأقل', true); return; }
+  editingCats.splice(idx, 1);
+  renderCatManageList();
+}
+
+function addNewCategory() {
+  const colors = COLOR_PALETTE;
+  const col = colors[editingCats.length % colors.length];
+  editingCats.push({ id: 'صنف_' + Date.now(), name: 'صنف جديد', emoji: '📌', color: col, bg: col + '20' });
+  renderCatManageList();
+}
+
+function saveCategories() {
+  // Validate
+  for (let c of editingCats) {
+    if (!c.name.trim()) { showToast('يرجى تسمية جميع الأصناف', true); return; }
+  }
+  CATS = editingCats.map(c => ({
+    ...c,
+    id: c.name.trim(),
+    name: c.name.trim(),
+    bg: c.bg || (c.color + '20')
+  }));
+  localStorage.setItem('cats', JSON.stringify(CATS));
+  selectedCat = CATS[0].id;
+  buildCatGrid();
+  buildCatTabs();
+  renderAll();
+  closeSettings();
+  showToast('✅ تم حفظ الأصناف!');
+}
+
+// ============================================================
+// AUTOCOMPLETE
+// ============================================================
+let acIndex = -1;
+
+function onNameInput(val) {
+  const list = document.getElementById('acList');
+  if (!val.trim()) { list.classList.add('hidden'); acIndex = -1; return; }
+
+  const matches = nameHistory.filter(n => n.includes(val) || n.startsWith(val));
+  // Also show items that match any character
+  const broader = nameHistory.filter(n => n !== val && !matches.includes(n) && levenshtein(n.slice(0,val.length), val) <= 1);
+  const combined = [...new Set([...matches, ...broader])].slice(0, 8);
+
+  if (combined.length === 0) { list.classList.add('hidden'); acIndex = -1; return; }
+
+  list.innerHTML = '';
+  combined.forEach((item, i) => {
+    const d = document.createElement('div');
+    d.className = 'autocomplete-item';
+    d.innerHTML = `<span class="ac-icon">🔍</span><span>${item}</span>`;
+    d.onclick = () => selectAcItem(item);
+    list.appendChild(d);
+  });
+
+  list.classList.remove('hidden');
+  acIndex = -1;
+}
+
+function onNameKey(e) {
+  const list = document.getElementById('acList');
+  const items = list.querySelectorAll('.autocomplete-item');
+  if (list.classList.contains('hidden') || items.length === 0) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    acIndex = Math.min(acIndex + 1, items.length - 1);
+    items.forEach((it, i) => it.classList.toggle('ac-selected', i === acIndex));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    acIndex = Math.max(acIndex - 1, -1);
+    items.forEach((it, i) => it.classList.toggle('ac-selected', i === acIndex));
+  } else if (e.key === 'Enter' && acIndex >= 0) {
+    e.preventDefault();
+    selectAcItem(items[acIndex].querySelector('span:last-child').textContent);
+  } else if (e.key === 'Escape') {
+    list.classList.add('hidden');
+  }
+}
+
+function selectAcItem(name) {
+  document.getElementById('expName').value = name;
+  document.getElementById('acList').classList.add('hidden');
+  acIndex = -1;
+  document.getElementById('expPrice').focus();
+}
+
+function saveNameToHistory(name) {
+  if (!name || name.length < 2) return;
+  nameHistory = [name, ...nameHistory.filter(n => n !== name)].slice(0, 100);
+  localStorage.setItem('nameHistory', JSON.stringify(nameHistory));
+}
+
+function levenshtein(a, b) {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const dp = Array.from({length: a.length + 1}, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[a.length][b.length];
+}
+
+// Close autocomplete when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    const list = document.getElementById('acList');
+    if (list) list.classList.add('hidden');
+  }
+});
+
+// ============================================================
+// RENDER
+// ============================================================
+function getFilteredExpenses() {
+  const month = document.getElementById('monthFilter').value;
+  return expenses.filter(e => {
+    const matchMonth = !month || e.date.startsWith(month);
+    const matchCat = filterCatActive === 'all' || e.category === filterCatActive;
+    return matchMonth && matchCat;
+  });
+}
+
+function formatNum(n) { return n.toLocaleString('ar-DZ'); }
+
+function renderAll() {
+  const filtered = getFilteredExpenses();
+  const sorted = sortAsc
+    ? [...filtered].sort((a,b) => a.date.localeCompare(b.date))
+    : [...filtered].sort((a,b) => b.date.localeCompare(a.date));
+
+  const list = document.getElementById('expensesList');
+  list.innerHTML = '';
+
+  if (sorted.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="icon">📭</div><p>لا توجد مصاريف مسجلة</p></div>`;
+  } else {
+    sorted.forEach(exp => {
+      const cat = getCat(exp.category);
+      const total = exp.price * exp.qty;
+      const card = document.createElement('div');
+      card.className = 'expense-card';
+      card.innerHTML = `
+        <div class="expense-icon" style="background:${cat.bg};border:1.5px solid ${cat.color}40">${cat.emoji}</div>
+        <div class="expense-info">
+          <div class="expense-name">${exp.name}</div>
+          <div class="expense-meta">
+            <span class="cat-badge" style="background:${cat.bg};color:${cat.color}">${cat.name}</span>
+            <span>${formatDate(exp.date)}</span>
+          </div>
+        </div>
+        <div class="expense-right">
+          <div class="expense-total" style="color:${cat.color}">${formatNum(total)} دج</div>
+          <div class="expense-unit">${formatNum(exp.price)} × ${exp.qty}</div>
+        </div>
+        <div class="delete-btn" onclick="deleteExpense('${exp.id}')">✕</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  // Summary
+  const allMonth = expenses.filter(e => {
+    const month = document.getElementById('monthFilter').value;
+    return !month || e.date.startsWith(month);
+  });
+  const totalSpent = allMonth.reduce((s,e) => s + e.price*e.qty, 0);
+  const remaining = budget - totalSpent;
+  const pct = Math.min((totalSpent/budget)*100, 100);
+
+  document.getElementById('totalSpent').textContent = formatNum(totalSpent);
+  document.getElementById('budgetDisplay').textContent = formatNum(budget);
+  document.getElementById('expenseCount').textContent = allMonth.length;
+  document.getElementById('remainingAmount').textContent = formatNum(Math.abs(remaining)) + ' دج';
+
+  const remEl = document.getElementById('remainingAmount');
+  remEl.className = 'budget-amount ' + (remaining < 0 ? 'over' : 'remaining');
+
+  const bar = document.getElementById('budgetBar');
+  bar.style.width = pct + '%';
+  bar.className = 'budget-progress-fill' + (pct > 80 ? ' danger' : '');
+
+  if (showChart) renderChart(allMonth);
+}
+
+function formatDate(d) {
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+function updateBudget() {
+  budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+  localStorage.setItem('budget', budget);
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  filterCatActive = cat;
+  document.querySelectorAll('.tabs-scroll .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+function toggleSort() {
+  sortAsc = !sortAsc;
+  renderAll();
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  buildCatGrid();
+  setTimeout(() => document.getElementById('expName').focus(), 300);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('acList').classList.add('hidden');
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.getElementById('settingsModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
+
+document.getElementById('backupModal').addEventListener('click', function(e) {
+  if (e.target === this) closeBackup();
+});
+
+// ============================================================
+// ADD EXPENSE
+// ============================================================
+function addExpense() {
+  const name = document.getElementById('expName').value.trim();
+  const price = parseFloat(document.getElementById('expPrice').value);
+  const qty = parseFloat(document.getElementById('expQty').value) || 1;
+  const date = document.getElementById('expDate').value;
+
+  if (!name || !price || !date) {
+    showToast('يرجى تعبئة جميع الحقول ⚠️', true); return;
+  }
+
+  const exp = {
+    id: Date.now().toString(),
+    name, price, qty, date,
+    category: selectedCat
+  };
+
+  expenses.unshift(exp);
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+
+  // Save to autocomplete history
+  saveNameToHistory(name);
+
+  document.getElementById('expName').value = '';
+  document.getElementById('expPrice').value = '';
+  document.getElementById('expQty').value = '1';
+  document.getElementById('acList').classList.add('hidden');
+
+  closeModal();
+  renderAll();
+  showToast('✅ تمت إضافة المصروف!');
+}
+
+function deleteExpense(id) {
+  if (!confirm('هل تريد حذف هذا المصروف؟')) return;
+  expenses = expenses.filter(e => e.id !== id);
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+  renderAll();
+  showToast('🗑️ تم الحذف');
+}
+
+function clearAll() {
+  if (!confirm('هل تريد حذف جميع المصاريف؟')) return;
+  expenses = [];
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+  renderAll();
+  showToast('🗑️ تم مسح الكل');
+}
+
+// ============================================================
+// CHART
+// ============================================================
+function toggleChart() {
+  showChart = !showChart;
+  document.getElementById('chartSection').style.display = showChart ? 'block' : 'none';
+  if (showChart) {
+    const allMonth = expenses.filter(e => {
+      const month = document.getElementById('monthFilter').value;
+      return !month || e.date.startsWith(month);
+    });
+    renderChart(allMonth);
+  }
+}
+
+function renderChart(data) {
+  const catTotals = {};
+  data.forEach(e => { catTotals[e.category] = (catTotals[e.category] || 0) + e.price * e.qty; });
+
+  const labels = Object.keys(catTotals);
+  const values = labels.map(l => catTotals[l]);
+  const colors = labels.map(l => getCat(l).color);
+
+  const canvas = document.getElementById('myChart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 300;
+  const H = 220;
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  const cx = W/2, cy = H/2 - 10, r = Math.min(W,H)/2 - 20;
+  const total = values.reduce((a,b) => a+b, 0);
+  if (total === 0) return;
+
+  let angle = -Math.PI/2;
+  values.forEach((v, i) => {
+    const slice = (v/total) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = colors[i]; ctx.fill();
+    ctx.strokeStyle = '#0f1117'; ctx.lineWidth = 2; ctx.stroke();
+    angle += slice;
+  });
+  ctx.beginPath(); ctx.arc(cx, cy, r*0.5, 0, Math.PI*2);
+  ctx.fillStyle = '#1a1d27'; ctx.fill();
+
+  const legend = document.getElementById('chartLegend');
+  legend.innerHTML = labels.map((l,i) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${colors[i]}"></div>
+      ${l}: ${formatNum(values[i])} دج
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// EXPORT CSV
+// ============================================================
+function exportCSV() {
+  const filtered = getFilteredExpenses();
+  if (filtered.length === 0) { showToast('لا توجد بيانات للتصدير', true); return; }
+  let csv = 'التاريخ,الاسم,الصنف,السعر,الكمية,المجموع\n';
+  filtered.forEach(e => { csv += `${e.date},${e.name},${e.category},${e.price},${e.qty},${e.price*e.qty}\n`; });
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  saveFile(blob, 'مصاريف.csv');
+  showToast('✅ تم التصدير بنجاح!');
+}
+
+// ============================================================
+// BACKUP & RESTORE
+// ============================================================
+function openBackup() {
+  const count = expenses.length;
+  const month = document.getElementById('monthFilter').value;
+  const monthCount = expenses.filter(e => !month || e.date.startsWith(month)).length;
+  document.getElementById('backupStats').innerHTML = `
+    📦 إجمالي المصاريف: <strong style="color:var(--accent)">${count}</strong><br>
+    📅 مصاريف الشهر الحالي: <strong style="color:var(--green)">${monthCount}</strong>
+  `;
+  document.getElementById('backupModal').classList.add('open');
+}
+
+function closeBackup() {
+  document.getElementById('backupModal').classList.remove('open');
+}
+
+async function exportBackup() {
+  const data = {
+    version: '2.0',
+    exportDate: new Date().toISOString(),
+    app: 'دفتر المصاريف',
+    budget: budget,
+    categories: CATS,
+    expenses: expenses,
+    nameHistory: nameHistory
+  };
+
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const dateStr = new Date().toISOString().split('T')[0];
+  const filename = `مصاريف-نسخة-${dateStr}.json`;
+
+  // Try File System Access API first (lets user choose location)
+  if ('showSaveFilePicker' in window) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [{
+          description: 'ملف JSON',
+          accept: { 'application/json': ['.json'] }
+        }]
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      showToast('✅ تم حفظ النسخة الاحتياطية!');
+      closeBackup();
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return; // User cancelled
+    }
+  }
+
+  // Fallback: auto download
+  saveFile(blob, filename);
+  showToast('✅ تم تنزيل النسخة الاحتياطية!');
+  closeBackup();
+}
+
+function restoreBackup() {
+  closeBackup();
+  document.getElementById('restoreFileGlobal').value = '';
+  document.getElementById('restoreFileGlobal').click();
+}
+
+function handleRestoreFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      if (!data.expenses || !Array.isArray(data.expenses)) {
+        showToast('الملف غير صالح ❌', true); return;
+      }
+
+      if (!confirm(`هل تريد استرجاع ${data.expenses.length} مصروف؟\nسيتم استبدال البيانات الحالية.`)) return;
+
+      expenses = data.expenses;
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+
+      if (data.budget) {
+        budget = data.budget;
+        localStorage.setItem('budget', budget);
+        document.getElementById('budgetInput').value = budget;
+      }
+
+      if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+        CATS = data.categories;
+        localStorage.setItem('cats', JSON.stringify(CATS));
+        buildCatGrid();
+        buildCatTabs();
+      }
+
+      if (data.nameHistory && Array.isArray(data.nameHistory)) {
+        nameHistory = data.nameHistory;
+        localStorage.setItem('nameHistory', JSON.stringify(nameHistory));
+      }
+
+      renderAll();
+      showToast(`✅ تم استرجاع ${expenses.length} مصروف!`);
+    } catch(err) {
+      showToast('خطأ في قراءة الملف ❌', true);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Helper: save file
+function saveFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ============================================================
+// SHARE
+// ============================================================
+async function openShare() {
+  const month = document.getElementById('monthFilter').value;
+  const allMonth = expenses.filter(e => !month || e.date.startsWith(month));
+  const totalSpent = allMonth.reduce((s,e) => s + e.price*e.qty, 0);
+
+  const shareData = {
+    title: 'دفتر المصاريف',
+    text: `📊 مصاريف شهر ${month || 'هذا الشهر'}\n💸 المصاريف: ${formatNum(totalSpent)} دج\n💰 الميزانية: ${formatNum(budget)} دج\n📋 عدد المدخلات: ${allMonth.length}`,
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch(e) {
+      if (e.name !== 'AbortError') showShareFallback(shareData.text);
+    }
+  } else {
+    showShareFallback(shareData.text);
+  }
+}
+
+function showShareFallback(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('✅ تم نسخ الملخص!'));
+  } else {
+    showToast('📋 ' + text.slice(0, 40) + '...');
+  }
+}
+
+// ============================================================
+// PWA INSTALL
+// ============================================================
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installBtn').classList.remove('hidden');
+  document.getElementById('installBanner').classList.remove('hidden');
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  document.getElementById('installBtn').classList.add('hidden');
+  document.getElementById('installBanner').classList.add('hidden');
+  showToast('✅ تم تثبيت التطبيق!');
+});
+
+function triggerInstall() {
+  document.getElementById('installBanner').classList.add('hidden');
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') showToast('✅ جاري تثبيت التطبيق...');
+      deferredInstallPrompt = null;
+    });
+  } else {
+    // iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      document.getElementById('iosModal').classList.add('open');
+    } else {
+      showToast('افتح التطبيق في متصفح Chrome لتثبيته', true);
+    }
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '') + ' show';
+  setTimeout(() => t.className = 'toast' + (isError ? ' error' : ''), 2800);
+}
+
+
+// ════════════════════════════════════════════════
+// SYNC ENGINE (jsonblob.com)
+// ════════════════════════════════════════════════
+function getDeviceId(){let id=localStorage.getItem('deviceId');if(!id){id='dev_'+Math.random().toString(36).slice(2,10);localStorage.setItem('deviceId',id);}return id;}
+function buildSyncPayload(){return{version:2,updatedAt:new Date().toISOString(),updatedBy:syncState.myName||'مجهول',deviceId:getDeviceId(),budget,expenses,categories:CATS,nameHistory,members:refreshMembers()};}
+function refreshMembers(){let m=JSON.parse(localStorage.getItem('syncMembers')||'[]');const me={id:getDeviceId(),name:syncState.myName||'مجهول',lastSeen:new Date().toISOString()};m=m.filter(x=>x.id!==me.id);m.unshift(me);localStorage.setItem('syncMembers',JSON.stringify(m));return m;}
+function saveSyncState(){localStorage.setItem('syncState',JSON.stringify(syncState));}
+function timeAgo(s){const d=(Date.now()-new Date(s))/1000;if(d<60)return'الآن';if(d<3600)return Math.floor(d/60)+'د';if(d<86400)return Math.floor(d/3600)+'س';return Math.floor(d/86400)+'ي';}
+function getLastSyncText(){return syncState.lastSynced?'آخر مزامنة: '+timeAgo(syncState.lastSynced):'لم تتم المزامنة بعد';}
+function updateSyncDot(){const d=document.getElementById('syncDot');if(d){d.style.background=syncState.connected?'var(--green)':'var(--red)';}}
+function setSyncUI(cls,icon,title,sub){const c=document.getElementById('syncStatusCard');if(!c)return;c.className='sync-status-card '+cls;document.getElementById('syncStatusIcon').textContent=icon;document.getElementById('syncStatusTitle').textContent=title;document.getElementById('syncStatusSub').textContent=sub;}
+
+async function createSyncRoom(){
+  const n=document.getElementById('syncMyName').value.trim();
+  if(!n){showToast('أدخل اسمك أولاً ⚠️',true);document.getElementById('syncMyName').focus();return;}
+  syncState.myName=n; setSyncUI('syncing','⏳','جاري إنشاء الغرفة...','يرجى الانتظار');
+  try{
+    const headers={'Content-Type':'application/json','Accept':'application/vnd.github+json'};
+    if(GITHUB_TOKEN)headers['Authorization']='Bearer '+GITHUB_TOKEN;
+    const body={description:'masarif-sync-'+Date.now(),public:false,files:{'masarif.json':{content:JSON.stringify(buildSyncPayload())}}};
+    const res=await fetch(SYNC_API,{method:'POST',headers,body:JSON.stringify(body)});
+    if(!res.ok)throw new Error('خطأ في الخادم: '+res.status);
+    const j=await res.json();
+    const gistId=j.id;
+    if(!gistId)throw new Error('لم يتم الحصول على معرّف الغرفة');
+    syncState.connected=true;syncState.blobId=gistId;syncState.lastSynced=new Date().toISOString();
+    saveSyncState();showConnectedUI();showToast('✅ تم إنشاء الغرفة!');
+    if(syncState.autoSync)startAutoSync();
+  }catch(err){setSyncUI('disconnected','🔴','فشل الإنشاء',err.message);showToast('❌ '+err.message,true);}
+}
+
+async function joinSyncRoom(){
+  const n=document.getElementById('syncJoinName').value.trim();
+  const code=document.getElementById('syncRoomCode').value.trim();
+  if(!n){showToast('أدخل اسمك ⚠️',true);return;}
+  if(!code){showToast('أدخل كود الغرفة ⚠️',true);return;}
+  syncState.myName=n; setSyncUI('syncing','⏳','جاري الانضمام...','');
+  try{
+    const headers={'Accept':'application/vnd.github+json'};
+    if(GITHUB_TOKEN)headers['Authorization']='Bearer '+GITHUB_TOKEN;
+    const res=await fetch('https://api.github.com/gists/'+code,{headers});
+    if(res.status===404)throw new Error('الغرفة غير موجودة');
+    if(!res.ok)throw new Error('خطأ في الخادم');
+    const j=await res.json();
+    const content=j.files&&j.files['masarif.json']?j.files['masarif.json'].content:'{}';
+    const data=JSON.parse(content);
+    mergeRemoteData(data);
+    syncState.connected=true;syncState.blobId=code;syncState.lastSynced=new Date().toISOString();
+    saveSyncState();await pushSync();
+    showConnectedUI();renderAll();showToast('✅ تم الانضمام!');
+    if(syncState.autoSync)startAutoSync();
+  }catch(err){setSyncUI('disconnected','🔴','فشل الانضمام',err.message);showToast('❌ '+err.message,true);}
+}
+
+async function pushSync(){
+  if(!syncState.connected||!syncState.blobId||syncBusy||!GITHUB_TOKEN)return;
+  syncBusy=true;
+  try{
+    const headers={'Content-Type':'application/json','Accept':'application/vnd.github+json','Authorization':'Bearer '+GITHUB_TOKEN};
+    const body={files:{'masarif.json':{content:JSON.stringify(buildSyncPayload())}}};
+    await fetch('https://api.github.com/gists/'+syncState.blobId,{method:'PATCH',headers,body:JSON.stringify(body)});
+    syncState.lastSynced=new Date().toISOString();saveSyncState();updateSyncDot();
+  }catch(e){console.warn('Push err',e);}finally{syncBusy=false;}
+}
+
+async function pullSync(){
+  if(!syncState.connected||!syncState.blobId)return;
+  try{
+    const headers={'Accept':'application/vnd.github+json'};
+    if(GITHUB_TOKEN)headers['Authorization']='Bearer '+GITHUB_TOKEN;
+    const res=await fetch('https://api.github.com/gists/'+syncState.blobId,{headers});
+    if(res.status===404){disconnectSync();return;}
+    if(!res.ok)return;
+    const j=await res.json();
+    const content=j.files&&j.files['masarif.json']?j.files['masarif.json'].content:'{}';
+    const data=JSON.parse(content);
+    const changed=mergeRemoteData(data);
+    syncState.lastSynced=new Date().toISOString();saveSyncState();
+    if(changed){renderAll();showToast('🔄 تم تحديث البيانات');}
+    refreshFriendsDisplay();updateSyncDot();
+  }catch(e){console.warn('Pull err',e);}
+}
+
+function mergeRemoteData(remote){
+  if(!remote||!remote.expenses)return false;
+  const local={};expenses.forEach(e=>{local[e.id]=e;});
+  let changed=false;
+  remote.expenses.forEach(re=>{if(!local[re.id]){expenses.push(re);changed=true;}});
+  if(changed){expenses.sort((a,b)=>b.date.localeCompare(a.date));localStorage.setItem('expenses',JSON.stringify(expenses));}
+  if(remote.members)localStorage.setItem('syncMembers',JSON.stringify(remote.members));
+  return changed;
+}
+
+async function manualSync(){
+  if(!syncState.connected)return;
+  setSyncUI('syncing','⏳','جاري المزامنة...','');
+  await pushSync();await pullSync();
+  setSyncUI('connected','🟢','متصل',getLastSyncText());
+  showToast('✅ تمت المزامنة!');
+}
+
+function startAutoSync(){stopAutoSync();syncTimer=setInterval(()=>{pullSync();pushSync();},60000);}
+function stopAutoSync(){if(syncTimer){clearInterval(syncTimer);syncTimer=null;}}
+
+function toggleAutoSync(){
+  syncState.autoSync=!syncState.autoSync;saveSyncState();
+  const t=document.getElementById('autoSyncToggle');
+  if(t)t.className='toggle-track'+(syncState.autoSync?'':' off');
+  if(syncState.autoSync)startAutoSync();else stopAutoSync();
+}
+
+function disconnectSync(){
+  if(!confirm('هل تريد قطع الاتصال بالغرفة؟'))return;
+  stopAutoSync();syncState.connected=false;syncState.blobId=null;saveSyncState();
+  localStorage.removeItem('syncMembers');
+  setSyncUI('disconnected','🔴','غير متصل','لم تنضم لأي غرفة بعد');
+  document.getElementById('syncConnectedSection').style.display='none';
+  document.getElementById('syncCreateSection').style.display='block';
+  updateSyncDot();showToast('🔌 تم قطع الاتصال');
+}
+
+function showConnectedUI(){
+  document.getElementById('syncCreateSection').style.display='none';
+  document.getElementById('syncConnectedSection').style.display='block';
+  document.getElementById('roomCodeDisplay').textContent=syncState.blobId||'—';
+  setSyncUI('connected','🟢','متصل بالغرفة',getLastSyncText());
+  const t=document.getElementById('autoSyncToggle');
+  if(t)t.className='toggle-track'+(syncState.autoSync?'':' off');
+  refreshFriendsDisplay();
+}
+
+function refreshFriendsDisplay(){
+  const fl=document.getElementById('syncFriendsList');if(!fl)return;
+  const members=JSON.parse(localStorage.getItem('syncMembers')||'[]');
+  if(!members.length){fl.innerHTML='<div style="font-size:12px;color:var(--text2);text-align:center;padding:10px">لا يوجد أعضاء بعد</div>';return;}
+  fl.innerHTML=members.map(m=>{
+    const init=m.name?m.name.slice(0,2):'؟';
+    const isMe=m.id===getDeviceId();
+    return '<div class="sync-friend-item"><div class="sync-friend-avatar">'+init+'</div><div class="sync-friend-name">'+m.name+(isMe?' (أنت)':'')+'</div><div class="sync-friend-time">'+timeAgo(m.lastSeen)+'</div></div>';
+  }).join('');
+  const cnt=members.length;
+  setSyncUI('connected','🟢','متصل • '+cnt+' '+(cnt===1?'عضو':'أعضاء'),getLastSyncText());
+}
+
+function openSync(){
+  document.getElementById('syncModal').classList.add('open');
+  if(syncState.connected){
+    document.getElementById('roomCodeDisplay').textContent=syncState.blobId||'—';
+    showConnectedUI();
+  }else{
+    document.getElementById('syncCreateSection').style.display='block';
+    document.getElementById('syncConnectedSection').style.display='none';
+    setSyncUI('disconnected','🔴','غير متصل','أنشئ أو انضم لغرفة مشتركة');
+  }
+}
+
+function copyRoomCode(){
+  const code=syncState.blobId||'';if(!code)return;
+  if(navigator.clipboard){navigator.clipboard.writeText(code).then(()=>showToast('✅ تم نسخ الكود!'));}
+  else{showToast('الكود: '+code.slice(0,20)+'...');}
+}
+
+async function shareRoomCode(){
+  const code=syncState.blobId||'';if(!code)return;
+  const txt='انضم لغرفة مصاريف "'+syncState.myName+'" 👇\nالكود: '+code+'\n\nافتح التطبيق > اضغط 🔄 > "انضم لغرفة"';
+  if(navigator.share){try{await navigator.share({title:'دفتر المصاريف',text:txt});return;}catch(e){}}
+  if(navigator.clipboard){await navigator.clipboard.writeText(txt);showToast('✅ تم نسخ كود الغرفة!');}
+}
+
+// Trigger sync after add/delete
+const _origAdd = addExpense;
+
+// ============================================================
+// SETTINGS MENU
+// ============================================================
+let isDarkMode = localStorage.getItem('darkMode') !== 'light';
+
+function toggleSettingsMenu() {
+  const menu = document.getElementById('settingsMenu');
+  menu.classList.toggle('open');
+}
+
+function closeSettingsMenu() {
+  document.getElementById('settingsMenu').classList.remove('open');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#settingsMenuBtn') && !e.target.closest('#settingsMenu')) {
+    closeSettingsMenu();
+  }
+});
+
+// ============================================================
+// DARK / LIGHT MODE
+// ============================================================
+const lightVars = {
+  '--bg': '#f4f6fb', '--surface': '#ffffff', '--surface2': '#eef1f8',
+  '--surface3': '#e4e8f3', '--text': '#1a1d2e', '--text2': '#6b7280',
+  '--border': 'rgba(0,0,0,0.08)', '--card-shadow': '0 4px 24px rgba(0,0,0,0.08)'
+};
+const darkVars = {
+  '--bg': '#0f1117', '--surface': '#1a1d27', '--surface2': '#22263a',
+  '--surface3': '#2a2f45', '--text': '#f0f2ff', '--text2': '#9ba3bf',
+  '--border': 'rgba(255,255,255,0.07)', '--card-shadow': '0 4px 24px rgba(0,0,0,0.4)'
+};
+
+function applyMode(dark) {
+  const vars = dark ? darkVars : lightVars;
+  const root = document.documentElement;
+  Object.entries(vars).forEach(([k,v]) => root.style.setProperty(k, v));
+  root.style.colorScheme = dark ? 'dark' : 'light';
+  document.getElementById('darkModeIcon').textContent = dark ? '🌙' : '☀️';
+  document.getElementById('darkModeLabel').textContent = dark ? 'الوضع الليلي' : 'الوضع النهاري';
+}
+
+function toggleDarkLight() {
+  isDarkMode = !isDarkMode;
+  localStorage.setItem('darkMode', isDarkMode ? 'dark' : 'light');
+  applyMode(isDarkMode);
+}
+
+// Apply on load
+applyMode(isDarkMode);
+
+// ============================================================
+// ABOUT MODAL
+// ============================================================
+function openAbout() {
+  document.getElementById('aboutModal').classList.add('open');
+  const c = document.getElementById('aboutIconCanvas');
+  if (c) drawAppIcon(c, 72);
+}
+
+document.getElementById('aboutModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+// ============================================================
+// FINAL RENDER
+renderAll();
+</script>
+</body>
+</html>
