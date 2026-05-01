@@ -1274,10 +1274,9 @@ let showChart = false;
 let deferredInstallPrompt = null;
 
 // ════════════════════════════════════════════════
-// SYNC STATE (GitHub Gist)
+// SYNC STATE (jsonblob.com — بدون مفتاح)
 // ════════════════════════════════════════════════
-const SYNC_API = 'https://api.github.com/gists';
-const GITHUB_TOKEN = ''; // اتركه فارغاً للقراءة العامة — أو ضع GitHub Token للكتابة
+const SYNC_API = 'https://jsonblob.com/api/jsonBlob';
 let syncState = JSON.parse(localStorage.getItem('syncState') || 'null') || {
   connected: false, blobId: null, myName: '', autoSync: true, lastSynced: null
 };
@@ -2008,15 +2007,12 @@ async function createSyncRoom(){
   if(!n){showToast('أدخل اسمك أولاً ⚠️',true);document.getElementById('syncMyName').focus();return;}
   syncState.myName=n; setSyncUI('syncing','⏳','جاري إنشاء الغرفة...','يرجى الانتظار');
   try{
-    const headers={'Content-Type':'application/json','Accept':'application/vnd.github+json'};
-    if(GITHUB_TOKEN)headers['Authorization']='Bearer '+GITHUB_TOKEN;
-    const body={description:'masarif-sync-'+Date.now(),public:false,files:{'masarif.json':{content:JSON.stringify(buildSyncPayload())}}};
-    const res=await fetch(SYNC_API,{method:'POST',headers,body:JSON.stringify(body)});
+    const res=await fetch(SYNC_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildSyncPayload())});
     if(!res.ok)throw new Error('خطأ في الخادم: '+res.status);
-    const j=await res.json();
-    const gistId=j.id;
-    if(!gistId)throw new Error('لم يتم الحصول على معرّف الغرفة');
-    syncState.connected=true;syncState.blobId=gistId;syncState.lastSynced=new Date().toISOString();
+    const location=res.headers.get('Location')||'';
+    const blobId=location.split('/').pop();
+    if(!blobId)throw new Error('لم يتم الحصول على معرّف الغرفة');
+    syncState.connected=true;syncState.blobId=blobId;syncState.lastSynced=new Date().toISOString();
     saveSyncState();showConnectedUI();showToast('✅ تم إنشاء الغرفة!');
     if(syncState.autoSync)startAutoSync();
   }catch(err){setSyncUI('disconnected','🔴','فشل الإنشاء',err.message);showToast('❌ '+err.message,true);}
@@ -2029,14 +2025,10 @@ async function joinSyncRoom(){
   if(!code){showToast('أدخل كود الغرفة ⚠️',true);return;}
   syncState.myName=n; setSyncUI('syncing','⏳','جاري الانضمام...','');
   try{
-    const headers={'Accept':'application/vnd.github+json'};
-    if(GITHUB_TOKEN)headers['Authorization']='Bearer '+GITHUB_TOKEN;
-    const res=await fetch('https://api.github.com/gists/'+code,{headers});
+    const res=await fetch(SYNC_API+'/'+code,{headers:{'Accept':'application/json'}});
     if(res.status===404)throw new Error('الغرفة غير موجودة');
     if(!res.ok)throw new Error('خطأ في الخادم');
-    const j=await res.json();
-    const content=j.files&&j.files['masarif.json']?j.files['masarif.json'].content:'{}';
-    const data=JSON.parse(content);
+    const data=await res.json();
     mergeRemoteData(data);
     syncState.connected=true;syncState.blobId=code;syncState.lastSynced=new Date().toISOString();
     saveSyncState();await pushSync();
@@ -2046,12 +2038,10 @@ async function joinSyncRoom(){
 }
 
 async function pushSync(){
-  if(!syncState.connected||!syncState.blobId||syncBusy||!GITHUB_TOKEN)return;
+  if(!syncState.connected||!syncState.blobId||syncBusy)return;
   syncBusy=true;
   try{
-    const headers={'Content-Type':'application/json','Accept':'application/vnd.github+json','Authorization':'Bearer '+GITHUB_TOKEN};
-    const body={files:{'masarif.json':{content:JSON.stringify(buildSyncPayload())}}};
-    await fetch('https://api.github.com/gists/'+syncState.blobId,{method:'PATCH',headers,body:JSON.stringify(body)});
+    await fetch(SYNC_API+'/'+syncState.blobId,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildSyncPayload())});
     syncState.lastSynced=new Date().toISOString();saveSyncState();updateSyncDot();
   }catch(e){console.warn('Push err',e);}finally{syncBusy=false;}
 }
@@ -2059,14 +2049,10 @@ async function pushSync(){
 async function pullSync(){
   if(!syncState.connected||!syncState.blobId)return;
   try{
-    const headers={'Accept':'application/vnd.github+json'};
-    if(GITHUB_TOKEN)headers['Authorization']='Bearer '+GITHUB_TOKEN;
-    const res=await fetch('https://api.github.com/gists/'+syncState.blobId,{headers});
+    const res=await fetch(SYNC_API+'/'+syncState.blobId,{headers:{'Accept':'application/json'}});
     if(res.status===404){disconnectSync();return;}
     if(!res.ok)return;
-    const j=await res.json();
-    const content=j.files&&j.files['masarif.json']?j.files['masarif.json'].content:'{}';
-    const data=JSON.parse(content);
+    const data=await res.json();
     const changed=mergeRemoteData(data);
     syncState.lastSynced=new Date().toISOString();saveSyncState();
     if(changed){renderAll();showToast('🔄 تم تحديث البيانات');}
