@@ -1212,9 +1212,9 @@ let showChart = false;
 let deferredInstallPrompt = null;
 
 // ════════════════════════════════════════════════
-// SYNC STATE (npoint.io — بدون مفتاح)
+// SYNC STATE (json.extendsclass.com — بدون مفتاح)
 // ════════════════════════════════════════════════
-const SYNC_API = 'https://api.npoint.io';
+const SYNC_API = 'https://json.extendsclass.com/bin';
 let syncState = JSON.parse(localStorage.getItem('syncState') || 'null') || {
   connected: false, blobId: null, myName: '', autoSync: true, lastSynced: null
 };
@@ -1915,7 +1915,7 @@ function showToast(msg, isError = false) {
 }
 
 // ════════════════════════════════════════════════
-// SYNC ENGINE (npoint.io)
+// SYNC ENGINE (json.extendsclass.com)
 // ════════════════════════════════════════════════
 function getDeviceId(){let id=localStorage.getItem('deviceId');if(!id){id='dev_'+Math.random().toString(36).slice(2,10);localStorage.setItem('deviceId',id);}return id;}
 function buildSyncPayload(){return{version:2,updatedAt:new Date().toISOString(),updatedBy:syncState.myName||'مجهول',deviceId:getDeviceId(),budget,expenses,categories:CATS,nameHistory,members:refreshMembers()};}
@@ -1931,7 +1931,11 @@ async function createSyncRoom(){
   if(!n){showToast('أدخل اسمك أولاً ⚠️',true);document.getElementById('syncMyName').focus();return;}
   syncState.myName=n; setSyncUI('syncing','⏳','جاري إنشاء الغرفة...','يرجى الانتظار');
   try{
-    const res=await fetch(SYNC_API+'/documents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildSyncPayload())});
+    const res=await fetch(SYNC_API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(buildSyncPayload())
+    });
     if(!res.ok)throw new Error('خطأ في الخادم: '+res.status);
     const data=await res.json();
     const blobId=data.id;
@@ -1951,7 +1955,7 @@ async function joinSyncRoom(){
   try{
     const res=await fetch(SYNC_API+'/'+code,{headers:{'Accept':'application/json'}});
     if(res.status===404)throw new Error('الغرفة غير موجودة');
-    if(!res.ok)throw new Error('خطأ في الخادم');
+    if(!res.ok)throw new Error('خطأ في الخادم: '+res.status);
     const data=await res.json();
     mergeRemoteData(data);
     syncState.connected=true;syncState.blobId=code;syncState.lastSynced=new Date().toISOString();
@@ -1965,7 +1969,11 @@ async function pushSync(){
   if(!syncState.connected||!syncState.blobId||syncBusy)return;
   syncBusy=true;
   try{
-    await fetch(SYNC_API+'/'+syncState.blobId,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildSyncPayload())});
+    await fetch(SYNC_API+'/'+syncState.blobId,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(buildSyncPayload())
+    });
     syncState.lastSynced=new Date().toISOString();saveSyncState();updateSyncDot();
   }catch(e){console.warn('Push err',e);}finally{syncBusy=false;}
 }
